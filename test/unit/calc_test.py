@@ -11,7 +11,7 @@ class TestCalculate(unittest.TestCase):
 
     def test_add_method_returns_correct_result(self):
         self.assertEqual(4, self.calc.add(2, 2))
-        self.assertEqual(4, self.calc.add(2, -2))
+        self.assertEqual(0, self.calc.add(2, -2))
         self.assertEqual(0, self.calc.add(-2, 2))
         self.assertEqual(1, self.calc.add(1, 0))
 
@@ -42,7 +42,7 @@ class TestCalculate(unittest.TestCase):
 
     def test_multiply_method_returns_correct_result(self):
         self.assertEqual(4, self.calc.multiply(2, 2))
-        self.assertEqual(1, self.calc.multiply(1, 0))
+        self.assertEqual(0, self.calc.multiply(1, 0))
         self.assertEqual(0, self.calc.multiply(-1, 0))
         self.assertEqual(-2, self.calc.multiply(-1, 2))
         self.assertRaises(TypeError, self.calc.multiply, "0", 0)
