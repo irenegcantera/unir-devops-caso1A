@@ -10,6 +10,7 @@ pipeline {
 		echo WORKSPACE
                 // Obtener código del repo
                 git 'https://github.com/irenegcantera/unir-devops-caso1A.git'
+		stash includes: '**', name: 'app' 
             }
         }
 
@@ -32,6 +33,7 @@ pipeline {
 				bat 'whoami'
 				bat 'hostname'
 				echo WORKSPACE
+				unstash 'app'
 				catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
 					bat '''
 						set PYTHONPATH=%WORKSPACE%
@@ -46,6 +48,7 @@ pipeline {
 				bat 'whoami'
 				bat 'hostname'
 				echo WORKSPACE
+				unstash 'app'
 			      catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
 				  bat '''
 				      set FLASK_APP=app\\api.py
@@ -64,6 +67,7 @@ pipeline {
 				bat 'whoami'
 				bat 'hostname'
 				echo WORKSPACE
+				unstash 'app'
 				junit 'result*.xml' 
 			    }
 			}
