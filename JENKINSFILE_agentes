@@ -10,7 +10,7 @@ pipeline {
 		echo WORKSPACE
                 // Obtener código del repo
                 git 'https://github.com/irenegcantera/unir-devops-caso1A.git'
-		stash includes: '**', name: 'app' 
+		stash(name: 'app') 
             }
         }
 
