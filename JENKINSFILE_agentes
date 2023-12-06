@@ -36,7 +36,7 @@ pipeline {
 					echo 'ANTES DE HACER UNSTASH'
 					bat 'dir'
 					unstash 'app'
-					echo 'DESPUÉS DE HACER UNSTASH'
+					echo 'DESPUES DE HACER UNSTASH'
 					bat 'dir'
 					catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
 						bat '''
