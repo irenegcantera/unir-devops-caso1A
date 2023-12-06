@@ -1,31 +1,33 @@
 pipeline {
-    agent none
+    	agent none
+	options { skipDefaultCheckout() }
 
-     stages {
-        stage('Get Code') {
+	stages {
+	stage('Get Code') {
 	    agent any
-            steps {
+	    steps {
 		bat 'whoami'
 		bat 'hostname'
 		echo WORKSPACE
-                // Obtener código del repo
-                git 'https://github.com/irenegcantera/unir-devops-caso1A.git'
+		// Obtener código del repo
+		git 'https://github.com/irenegcantera/unir-devops-caso1A.git'
+		checkout scm 
 		stash(name: 'app') 
-            }
-        }
-
-        stage('Build') {
-           agent any
-           steps {
+	    }
+	}
+	
+	stage('Build') {
+	   agent any
+	   steps {
 		bat 'whoami'
 		bat 'hostname'
 		echo 'Eyyy, esto es Python. No hay que compilar nada!!!'
-	      	echo WORKSPACE
-             	bat 'dir'
-           }
-        }
-
-        stage('Tests') {
+		echo WORKSPACE
+		bat 'dir'
+	   }
+	}
+	
+	stage('Tests') {
 		agent { label 'unit || rest || tests' }
 		stages {
 			stage('UnitTest') {
@@ -73,5 +75,5 @@ pipeline {
 			}
 		}
 	}
-    }
+	}
 }
