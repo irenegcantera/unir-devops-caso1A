@@ -3,77 +3,77 @@ pipeline {
 	options { skipDefaultCheckout() }
 
 	stages {
-	stage('Get Code') {
-	    agent any
-	    steps {
-		bat 'whoami'
-		bat 'hostname'
-		echo WORKSPACE
-		// Obtener código del repo
-		git 'https://github.com/irenegcantera/unir-devops-caso1A.git'
-		checkout scm 
-		stash(name: 'app') 
-	    }
-	}
-	
-	stage('Build') {
-	   agent any
-	   steps {
-		bat 'whoami'
-		bat 'hostname'
-		echo 'Eyyy, esto es Python. No hay que compilar nada!!!'
-		echo WORKSPACE
-		bat 'dir'
-	   }
-	}
-	
-	stage('Tests') {
-		agent { label 'unit || rest || tests' }
-		stages {
-			stage('UnitTest') {
-			    steps {
-				bat 'whoami'
-				bat 'hostname'
-				echo WORKSPACE
-				unstash 'app'
-				catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
-					bat '''
-						set PYTHONPATH=%WORKSPACE%
-						C:\\Users\\irene\\AppData\\Local\\Programs\\Python\\Python39\\Scripts\\pytest --junitxml=result-unit.xml test\\unit
-					'''
-				}
-			    }
-			}
+		stage('Get Code') {
+		    agent any
+		    steps {
+			bat 'whoami'
+			bat 'hostname'
+			echo WORKSPACE
+			// Obtener código del repo
+			// checkout scm 
+			git 'https://github.com/irenegcantera/unir-devops-caso1A.git'
+			stash(name: 'app') 
+		    }
+		}
 		
-			stage('RestTest') {
-			    steps {
-				bat 'whoami'
-				bat 'hostname'
-				echo WORKSPACE
-				unstash 'app'
-			      catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
-				  bat '''
-				      set FLASK_APP=app\\api.py
-				      set FLASK_ENV=development
-				      start flask run
-				      start java -jar C:\\Users\\irene\\Desktop\\DEVOPS_AND_CLOUD\\CP_1\\helloworld\\test\\wiremock\\wiremock-standalone-3.3.1.jar --port 9090 --root-dir C:\\Users\\irene\\Desktop\\DEVOPS_AND_CLOUD\\CP_1\\helloworld\\test\\wiremock
-				      set PYTHONPATH=%WORKSPACE%
-				      C:\\Users\\irene\\AppData\\Local\\Programs\\Python\\Python39\\Scripts\\pytest --junitxml=result-rest.xml test\\rest
-				  '''
-				}    
-			      }
-			  }
-		    
-			  stage('Results') {
-			    steps {
-				bat 'whoami'
-				bat 'hostname'
-				echo WORKSPACE
-				unstash 'app'
-				junit 'result*.xml' 
-			    }
+		stage('Build') {
+		   agent any
+		   steps {
+			bat 'whoami'
+			bat 'hostname'
+			echo 'Eyyy, esto es Python. No hay que compilar nada!!!'
+			echo WORKSPACE
+			bat 'dir'
+		   }
+		}
+		
+		stage('Tests') {
+			agent { label 'unit || rest || tests' }
+			stages {
+				stage('UnitTest') {
+				    steps {
+					bat 'whoami'
+					bat 'hostname'
+					echo WORKSPACE
+					unstash 'app'
+					catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+						bat '''
+							set PYTHONPATH=%WORKSPACE%
+							C:\\Users\\irene\\AppData\\Local\\Programs\\Python\\Python39\\Scripts\\pytest --junitxml=result-unit.xml test\\unit
+						'''
+					}
+				    }
+				}
+			
+				stage('RestTest') {
+				    steps {
+					bat 'whoami'
+					bat 'hostname'
+					echo WORKSPACE
+					unstash 'app'
+				      catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+					  bat '''
+					      set FLASK_APP=app\\api.py
+					      set FLASK_ENV=development
+					      start flask run
+					      start java -jar C:\\Users\\irene\\Desktop\\DEVOPS_AND_CLOUD\\CP_1\\helloworld\\test\\wiremock\\wiremock-standalone-3.3.1.jar --port 9090 --root-dir C:\\Users\\irene\\Desktop\\DEVOPS_AND_CLOUD\\CP_1\\helloworld\\test\\wiremock
+					      set PYTHONPATH=%WORKSPACE%
+					      C:\\Users\\irene\\AppData\\Local\\Programs\\Python\\Python39\\Scripts\\pytest --junitxml=result-rest.xml test\\rest
+					  '''
+					}    
+				      }
+				  }
+			    
+				  stage('Results') {
+				    steps {
+					bat 'whoami'
+					bat 'hostname'
+					echo WORKSPACE
+					unstash 'app'
+					junit 'result*.xml' 
+				    }
+				}
 			}
 		}
-	}
 	}
 }
