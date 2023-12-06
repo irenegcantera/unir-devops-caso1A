@@ -22,7 +22,6 @@ pipeline {
 			bat 'whoami'
 			bat 'hostname'
 			echo 'Eyyy, esto es Python. No hay que compilar nada!!!'
-			echo WORKSPACE
 			bat 'dir'
 		   }
 		}
@@ -34,8 +33,8 @@ pipeline {
 				    steps {
 					bat 'whoami'
 					bat 'hostname'
-					echo WORKSPACE
 					unstash 'app'
+					bat 'dir'
 					catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
 						bat '''
 							set PYTHONPATH=%WORKSPACE%
@@ -47,10 +46,6 @@ pipeline {
 			
 				stage('RestTest') {
 				    steps {
-					bat 'whoami'
-					bat 'hostname'
-					echo WORKSPACE
-					unstash 'app'
 				      catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
 					  bat '''
 					      set FLASK_APP=app\\api.py
@@ -66,10 +61,6 @@ pipeline {
 			    
 				  stage('Results') {
 				    steps {
-					bat 'whoami'
-					bat 'hostname'
-					echo WORKSPACE
-					unstash 'app'
 					junit 'result*.xml' 
 				    }
 				}
