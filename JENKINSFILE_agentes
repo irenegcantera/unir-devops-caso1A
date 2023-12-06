@@ -16,6 +16,8 @@ pipeline {
         stage('Build') {
            agent any
            steps {
+		bat 'whoami'
+		bat 'hostname'
 		echo 'Eyyy, esto es Python. No hay que compilar nada!!!'
 	      	echo WORKSPACE
              	bat 'dir'
@@ -25,18 +27,24 @@ pipeline {
         stage('UnitTest') {
             agent { label 'unit' }
             steps {
-              catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
-                  bat '''
-                      set PYTHONPATH=%WORKSPACE%
-                      C:\\Users\\irene\\AppData\\Local\\Programs\\Python\\Python39\\Scripts\\pytest --junitxml=result-unit.xml test\\unit
-                  '''
-                }
+		bat 'whoami'
+		bat 'hostname'
+		echo WORKSPACE
+		catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+			bat '''
+				set PYTHONPATH=%WORKSPACE%
+				C:\\Users\\irene\\AppData\\Local\\Programs\\Python\\Python39\\Scripts\\pytest --junitxml=result-unit.xml test\\unit
+			'''
+		}
             }
         }
         
         stage('RestTest') {
             agent { label 'rest' }
             steps {
+		bat 'whoami'
+		bat 'hostname'
+		echo WORKSPACE
               catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
                   bat '''
                       set FLASK_APP=app\\api.py
@@ -53,6 +61,9 @@ pipeline {
     	  stage('Results') {
             agent { label 'tests' }
             steps {
+		bat 'whoami'
+		bat 'hostname'
+		echo WORKSPACE
                 junit 'result*.xml' 
             }
         }
