@@ -5,8 +5,8 @@ pipeline {
         stage('Get Code') {
 	    agent any
             steps {
-		whoami
-		hostname
+		bat 'whoami'
+		bat 'hostname'
 		echo WORKSPACE
                 // Obtener código del repo
                 git 'https://github.com/irenegcantera/unir-devops-caso1A.git'
