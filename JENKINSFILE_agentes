@@ -11,6 +11,7 @@ pipeline {
 			echo WORKSPACE
 			// Obtener código del repo
 			// checkout scm 
+			cleanWs()
 			git 'https://github.com/irenegcantera/unir-devops-caso1A.git'
 			stash(name: 'app') 
 		    }
