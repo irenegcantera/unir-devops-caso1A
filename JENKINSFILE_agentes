@@ -2,19 +2,23 @@ pipeline {
     agent none
 
      stages {
-        //stage('Get Code') {
-            //steps {
+	agent any
+        stage('Get Code') {
+            steps {
+		whoami
+		hostname
+		echo WORKSPACE
                 // Obtener código del repo
-                //git 'https://github.com/irenegcantera/unir-devops-caso1A.git'
-            //}
-        //}
+                git 'https://github.com/irenegcantera/unir-devops-caso1A.git'
+            }
+        }
 
         stage('Build') {
            agent any
            steps {
-              echo 'Eyyy, esto es Python. No hay que compilar nada!!!'
-	          echo WORKSPACE
-              bat 'dir'
+		echo 'Eyyy, esto es Python. No hay que compilar nada!!!'
+	      	echo WORKSPACE
+             	bat 'dir'
            }
         }
 
