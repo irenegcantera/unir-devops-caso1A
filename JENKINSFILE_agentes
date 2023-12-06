@@ -83,7 +83,7 @@ pipeline {
 
 	post { 
 	        always { 
-			node () {
+			node ('') {
 		            echo 'Borrar WORKSPACE!'
 			    cleanWs()
 			}
