@@ -21,6 +21,7 @@ pipeline {
 		   steps {
 			bat 'whoami'
 			bat 'hostname'
+			echo WORKSPACE
 			echo 'Eyyy, esto es Python. No hay que compilar nada!!!'
 			bat 'dir'
 		   }
@@ -44,12 +45,17 @@ pipeline {
 							C:\\Users\\irene\\AppData\\Local\\Programs\\Python\\Python39\\Scripts\\pytest --junitxml=result-unit.xml test\\unit
 						'''
 					}
+					stash(includes: 'result-unit.xml', name: 'result-unit') 
 				    }
 				}
 			
 				stage('RestTest') {
 				    steps {
-				      catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+					
+					bat 'whoami'
+					bat 'hostname'
+					echo WORKSPACE
+					catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
 					  bat '''
 					      set FLASK_APP=app\\api.py
 					      set FLASK_ENV=development
@@ -58,16 +64,19 @@ pipeline {
 					      set PYTHONPATH=%WORKSPACE%
 					      C:\\Users\\irene\\AppData\\Local\\Programs\\Python\\Python39\\Scripts\\pytest --junitxml=result-rest.xml test\\rest
 					  '''
-					}    
-				      }
-				  }
-			    
-				  stage('Results') {
-				    steps {
-					junit 'result*.xml' 
-				    }
-				}
+					}
+					stash(includes: 'result-rest.xml', name: 'result-rest') 
+				   }
+			        }
 			}
+		}
+
+		stage('Results') {
+		     steps {
+			unstash 'result-unit'
+			unstash 'result-rest'
+			 junit 'result*.xml' 
+		     }
 		}
 	}
 }
