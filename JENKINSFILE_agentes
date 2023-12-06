@@ -83,7 +83,7 @@ pipeline {
 
 	post { 
 	        always { 
-			node (''unit || rest || tests || git') {
+			node ('unit || rest || tests || git') {
 		            echo 'Borrar WORKSPACE!'
 			    cleanWs()
 			}
