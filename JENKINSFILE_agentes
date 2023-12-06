@@ -4,7 +4,7 @@ pipeline {
 
 	stages {
 		stage('Get Code') {
-		    agent { label 'git }
+		    agent { label 'git' }
 		    steps {
 			bat 'whoami'
 			bat 'hostname'
