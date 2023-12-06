@@ -72,6 +72,7 @@ pipeline {
 		}
 
 		stage('Results') {
+		     agent any
 		     steps {
 			unstash 'result-unit'
 			unstash 'result-rest'
