@@ -2,12 +2,12 @@ pipeline {
     agent any
 
      stages {
-        stage('Get Code') {
-            steps {
+        //stage('Get Code') {
+            //steps {
                 // Obtener código del repo
-                git 'https://github.com/irenegcantera/unir-devops-caso1A.git'
-            }
-        }
+                //git 'https://github.com/irenegcantera/unir-devops-caso1A.git'
+            //}
+        //}
 
         stage('Build') {
            steps {
