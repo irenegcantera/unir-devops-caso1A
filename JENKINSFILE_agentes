@@ -33,7 +33,10 @@ pipeline {
 				    steps {
 					bat 'whoami'
 					bat 'hostname'
+					echo 'ANTES DE HACER UNSTASH'
+					bat 'dir'
 					unstash 'app'
+					echo 'DESPUÉS DE HACER UNSTASH'
 					bat 'dir'
 					catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
 						bat '''
