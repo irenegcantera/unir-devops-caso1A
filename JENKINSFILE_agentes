@@ -2,8 +2,8 @@ pipeline {
     agent none
 
      stages {
-	agent any
         stage('Get Code') {
+	    agent any
             steps {
 		whoami
 		hostname
