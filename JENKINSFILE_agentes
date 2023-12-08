@@ -31,8 +31,8 @@ pipeline {
 
 		stage('Tests') {
 			agent { label 'unit || rest || tests' }
-			parallel {
-				stages {
+			stages {
+				parallel {
 					stage('UnitTest') {
 					    steps {
 						bat 'whoami'
@@ -70,7 +70,7 @@ pipeline {
 						}
 						stash(includes: 'result-rest.xml', name: 'result-rest') 
 					   }
-				        }
+					}
 				}
 			}
 		}
