@@ -30,7 +30,6 @@ pipeline {
 
 
 		stage('Tests') {
-		    stages {
 		        parallel {
 			    stage('UnitTest') {
 			    	agent { label 'unit || rest || tests' }
@@ -72,7 +71,6 @@ pipeline {
 			         }
 			   }
 		        }
-		    }
 		}
 
 		stage('Results') {
