@@ -14,6 +14,7 @@ pipeline {
 			cleanWs()
 			git 'https://github.com/irenegcantera/unir-devops-caso1A.git'
 			stash(name: 'app') 
+
 		    }
 		}
 		
