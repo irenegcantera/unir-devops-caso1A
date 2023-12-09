@@ -27,54 +27,55 @@ pipeline {
 			bat 'dir'
 		   }
 		}
-		
+
 		stage('Tests') {
-			agent { label 'unit || rest || tests' }
-			stages {
-				stage('UnitTest') {
-				    steps {
-					bat 'whoami'
-					bat 'hostname'
-					echo 'ANTES DE HACER UNSTASH'
-					bat 'dir'
-					unstash 'app'
-					echo 'DESPUES DE HACER UNSTASH'
-					bat 'dir'
-					catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
-						bat '''
-							set PYTHONPATH=%WORKSPACE%
-							C:\\Users\\irene\\AppData\\Local\\Programs\\Python\\Python39\\Scripts\\pytest --junitxml=result-unit.xml test\\unit
-						'''
-					}
-					stash(includes: 'result-unit.xml', name: 'result-unit') 
-				    }
-				}
-			
-				stage('RestTest') {
-				    steps {
-					
-					bat 'whoami'
-					bat 'hostname'
-					echo WORKSPACE
-					catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
-					  bat '''
-					      set FLASK_APP=app\\api.py
-					      set FLASK_ENV=development
-					      start flask run
-					      start java -jar C:\\Users\\irene\\Desktop\\DEVOPS_AND_CLOUD\\CP_1\\helloworld\\test\\wiremock\\wiremock-standalone-3.3.1.jar --port 9090 --root-dir C:\\Users\\irene\\Desktop\\DEVOPS_AND_CLOUD\\CP_1\\helloworld\\test\\wiremock
-					      set PYTHONPATH=%WORKSPACE%
-					      C:\\Users\\irene\\AppData\\Local\\Programs\\Python\\Python39\\Scripts\\pytest --junitxml=result-rest.xml test\\rest
-					  '''
-					}
-					stash(includes: 'result-rest.xml', name: 'result-rest') 
-				   }
+		        parallel {
+			    stage('UnitTest') {
+			    	agent { label 'unit || rest || tests' }
+			        steps {
+				    bat 'whoami'
+				    bat 'hostname'
+				    echo WORKSPACE	    
+				    unstash 'app'
+				    bat 'dir'
+				    catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+					bat '''
+					    set PYTHONPATH=%WORKSPACE%
+					    C:\\Users\\irene\\AppData\\Local\\Programs\\Python\\Python39\\Scripts\\pytest --junitxml=result-unit.xml test\\unit
+					'''
+				     }
+				     stash(includes: 'result-unit.xml', name: 'result-unit') 
 			        }
-			}
+			    }
+				
+			    stage('RestTest') {
+				 agent { label 'unit || rest || tests' }
+			         steps {
+			             bat 'whoami'
+				     bat 'hostname'
+				     echo WORKSPACE
+				     catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+				         bat '''
+				             set FLASK_APP=app\\api.py
+				             set FLASK_ENV=development
+				             start flask run
+				             start java -jar C:\\Users\\irene\\Desktop\\DEVOPS_AND_CLOUD\\CP_1\\helloworld\\test\\wiremock\\wiremock-standalone-3.3.1.jar --port 9090 --root-dir C:\\Users\\irene\\Desktop\\DEVOPS_AND_CLOUD\\CP_1\\helloworld\\test\\wiremock
+				             set PYTHONPATH=%WORKSPACE%
+				             C:\\Users\\irene\\AppData\\Local\\Programs\\Python\\Python39\\Scripts\\pytest --junitxml=result-rest.xml test\\rest
+				         '''
+				    }
+				    stash(includes: 'result-rest.xml', name: 'result-rest') 
+			         }
+			   }
+		        }
 		}
 
 		stage('Results') {
-		     agent any
+		     agent { label 'unit || rest || tests' }
 		     steps {
+		        bat 'whoami'
+		        bat 'hostname'
+		        echo WORKSPACE
 			unstash 'result-unit'
 			unstash 'result-rest'
 			junit 'result*.xml' 
@@ -83,11 +84,15 @@ pipeline {
 	}
 
 	post { 
-	        always { 
-			node ('unit || rest || tests') {
-		            echo 'Borrar WORKSPACE!'
-			    cleanWs()
-			}
-		}
+	    always { 
+		node ('unit || rest || tests') {
+		     echo 'Borrar WORKSPACE agent-test!'
+		     cleanWs()
+	        }
+		node ('git') {
+		     echo 'Borrar WORKSPACE agent-git!'
+		     cleanWs()
+	        }
+	    }
 	}
 }

@@ -17,30 +17,34 @@ pipeline {
            }
         }
 
-	stage('UnitTest') {
-	    steps {
-		catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
-		    bat '''
-			set PYTHONPATH=%WORKSPACE%
-			C:\\Users\\irene\\AppData\\Local\\Programs\\Python\\Python39\\Scripts\\pytest --junitxml=result-unit.xml test\\unit
-		    '''
-	       }
-	    }
-	}
-
-	stage('RestTest') {
-	    steps {
-		catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
-			bat '''
-			    set FLASK_APP=app\\api.py
-			    set FLASK_ENV=development
-			    start flask run
-			    start java -jar C:\\Users\\irene\\Desktop\\DEVOPS_AND_CLOUD\\CP_1\\helloworld\\test\\wiremock\\wiremock-standalone-3.3.1.jar --port 9090 --root-dir C:\\Users\\irene\\Desktop\\DEVOPS_AND_CLOUD\\CP_1\\helloworld\\test\\wiremock
-			    set PYTHONPATH=%WORKSPACE%
-			    C:\\Users\\irene\\AppData\\Local\\Programs\\Python\\Python39\\Scripts\\pytest --junitxml=result-rest.xml test\\rest
-			'''
-		    
-		}    
+	stage('Tests') {
+            parallel {
+		stage('UnitTest') {
+		    steps {
+			catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+			    bat '''
+				set PYTHONPATH=%WORKSPACE%
+				C:\\Users\\irene\\AppData\\Local\\Programs\\Python\\Python39\\Scripts\\pytest --junitxml=result-unit.xml test\\unit
+			    '''
+		       }
+		    }
+		}
+	
+		stage('RestTest') {
+		    steps {
+			catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+				bat '''
+				    set FLASK_APP=app\\api.py
+				    set FLASK_ENV=development
+				    start flask run
+				    start java -jar C:\\Users\\irene\\Desktop\\DEVOPS_AND_CLOUD\\CP_1\\helloworld\\test\\wiremock\\wiremock-standalone-3.3.1.jar --port 9090 --root-dir C:\\Users\\irene\\Desktop\\DEVOPS_AND_CLOUD\\CP_1\\helloworld\\test\\wiremock
+				    set PYTHONPATH=%WORKSPACE%
+				    C:\\Users\\irene\\AppData\\Local\\Programs\\Python\\Python39\\Scripts\\pytest --junitxml=result-rest.xml test\\rest
+				'''
+			    
+			}    
+		    }
+		}
 	    }
 	}
 
