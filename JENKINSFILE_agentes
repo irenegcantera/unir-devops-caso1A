@@ -58,12 +58,6 @@ pipeline {
 				     }
 				     stash(includes: 'result-unit.xml', name: 'result-unit') 
 			        }
-			        post { 
-				    always { 
-				        echo 'Borrar WORKSPACE agent-tests!'
-				        cleanWs()
-				    }
-			         }
 			    }
 				
 			    stage('RestTest') {
@@ -84,12 +78,12 @@ pipeline {
 				    }
 				    stash(includes: 'result-rest.xml', name: 'result-rest') 
 			         }
-				   post { 
-					always { 
-					    echo 'Borrar WORKSPACE agent-tests!'
-					    cleanWs()
-					}
-				    }
+			         post { 
+				     always { 
+					echo 'Borrar WORKSPACE agent-test!'
+					cleanWs()
+				     }
+				 }
 			   }
 		        }
 		}
