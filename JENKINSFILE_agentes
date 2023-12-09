@@ -28,7 +28,6 @@ pipeline {
 		   }
 		}
 
-
 		stage('Tests') {
 		        parallel {
 			    stage('UnitTest') {
@@ -36,10 +35,8 @@ pipeline {
 			        steps {
 				    bat 'whoami'
 				    bat 'hostname'
-				    echo 'ANTES DE HACER UNSTASH'
-				    bat 'dir'
+				    echo WORKSPACE	    
 				    unstash 'app'
-				    echo 'DESPUES DE HACER UNSTASH'
 				    bat 'dir'
 				    catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
 					bat '''
@@ -76,9 +73,12 @@ pipeline {
 		stage('Results') {
 		     agent any
 		     steps {
+		        bat 'whoami'
+		        bat 'hostname'
+		        echo WORKSPACE
 			unstash 'result-unit'
 			unstash 'result-rest'
-			 junit 'result*.xml' 
+			junit 'result*.xml' 
 		     }
 		}
 	}
