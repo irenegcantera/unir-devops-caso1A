@@ -60,7 +60,7 @@ pipeline {
 			        }
 			        post { 
 				    always { 
-				        echo 'Borrar WORKSPACE principal!'
+				        echo 'Borrar WORKSPACE agent-tests!'
 				        cleanWs()
 				    }
 			         }
@@ -86,7 +86,7 @@ pipeline {
 			         }
 				   post { 
 					always { 
-					    echo 'Borrar WORKSPACE principal!'
+					    echo 'Borrar WORKSPACE agent-tests!'
 					    cleanWs()
 					}
 				    }
