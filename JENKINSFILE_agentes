@@ -15,6 +15,12 @@ pipeline {
 			git 'https://github.com/irenegcantera/unir-devops-caso1A.git'
 			stash(name: 'app') 
 		    }
+		    post { 
+			always { 
+			    echo 'Borrar WORKSPACE agent-git!'
+			    cleanWs()
+			}
+		    }
 		}
 		
 		stage('Build') {
@@ -26,6 +32,12 @@ pipeline {
 			echo 'Eyyy, esto es Python. No hay que compilar nada!!!'
 			bat 'dir'
 		   }
+		   post { 
+			always { 
+			    echo 'Borrar WORKSPACE principal!'
+			    cleanWs()
+			}
+		    }
 		}
 
 		stage('Tests') {
@@ -46,6 +58,12 @@ pipeline {
 				     }
 				     stash(includes: 'result-unit.xml', name: 'result-unit') 
 			        }
+			        post { 
+				    always { 
+				        echo 'Borrar WORKSPACE principal!'
+				        cleanWs()
+				    }
+			         }
 			    }
 				
 			    stage('RestTest') {
@@ -66,6 +84,12 @@ pipeline {
 				    }
 				    stash(includes: 'result-rest.xml', name: 'result-rest') 
 			         }
+				   post { 
+					always { 
+					    echo 'Borrar WORKSPACE principal!'
+					    cleanWs()
+					}
+				    }
 			   }
 		        }
 		}
@@ -81,14 +105,20 @@ pipeline {
 			junit 'result*.xml' 
 		     }
 		}
-	}
-
-	post { 
-	        always { 
-			node ('unit || rest || tests') {
-		            echo 'Borrar WORKSPACE!'
+		   post { 
+			always { 
+			    echo 'Borrar WORKSPACE principal!'
 			    cleanWs()
 			}
-		}
+		    }
 	}
+
+	//post { 
+	        //always { 
+			//node ('unit || rest || tests') {
+		            //echo 'Borrar WORKSPACE!'
+			    //cleanWs()
+			//}
+		//}
+	//}
 }
