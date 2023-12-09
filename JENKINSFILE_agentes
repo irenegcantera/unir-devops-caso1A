@@ -70,7 +70,7 @@ pipeline {
 		}
 
 		stage('Results') {
-		     agent any
+		     agent { label 'unit || rest || tests' }
 		     steps {
 		        bat 'whoami'
 		        bat 'hostname'
