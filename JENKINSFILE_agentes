@@ -92,6 +92,10 @@ pipeline {
 		     echo 'Borrar WORKSPACE agent-git!'
 		     cleanWs()
 	        }
+		node ('principal') {
+		     echo 'Borrar WORKSPACE principal!'
+		     cleanWs()
+	        }
 	    }
 	}
 }
