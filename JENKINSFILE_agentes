@@ -104,13 +104,13 @@ pipeline {
 			unstash 'result-rest'
 			junit 'result*.xml' 
 		     }
-		}
 		   post { 
 			always { 
 			    echo 'Borrar WORKSPACE principal!'
 			    cleanWs()
 			}
 		    }
+		}
 	}
 
 	//post { 
