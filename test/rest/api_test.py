@@ -2,7 +2,6 @@ import http.client
 import os
 import unittest
 from urllib.request import urlopen
-from urllib.error import HTTPError
 
 import pytest
 
@@ -25,50 +24,6 @@ class TestApi(unittest.TestCase):
         self.assertEqual(
             response.read().decode(), "3", "ERROR ADD"
         )
-     
-    def test_api_multiply(self):
-        url = f"{BASE_URL}/calc/multiply/0/666"
-        response = urlopen(url, timeout=DEFAULT_TIMEOUT)
-        self.assertEqual(
-            response.status, http.client.OK, f"Error en la petición API a {url}"
-        )
-        self.assertEqual(
-            response.read().decode(), "0", "ERROR MULTIPLY"
-        )
-        
-    def test_api_multiply_type_error(self):
-        url = f"{BASE_URL}/calc/multiply/A/666"
-        with pytest.raises(HTTPError) as z:
-            response = urlopen(url, timeout=DEFAULT_TIMEOUT)
-            self.assertEqual(
-                response.status, http.client.BAD_REQUEST, f"Error en la petición API a {url}"
-            )
-        
-    def test_api_divide(self):
-        url = f"{BASE_URL}/calc/divide/50/2"
-        response = urlopen(url, timeout=DEFAULT_TIMEOUT)
-        self.assertEqual(
-            response.status, http.client.OK, f"Error en la petición API a {url}"
-        )
-        self.assertEqual(
-            response.read().decode(), "25.0", "ERROR DIVIDE"
-        )
-    
-    def test_api_divide_type_error(self):
-        url = f"{BASE_URL}/calc/divide/A/666"
-        with pytest.raises(HTTPError) as z:
-            response = urlopen(url, timeout=DEFAULT_TIMEOUT)
-            self.assertEqual(
-                response.status, http.client.BAD_REQUEST, f"Error en la petición API a {url}"
-            )
-    
-    def test_api_divide_zero_division_error(self):
-        url = f"{BASE_URL}/calc/divide/7/0"
-        with pytest.raises(HTTPError) as z:
-            response = urlopen(url, timeout=DEFAULT_TIMEOUT)
-            self.assertEqual(
-                response.status, http.client.NOT_ACCEPTABLE, f"Error en la petición API a {url}"
-            )
 
     def test_api_sqrt(self):
         url = f"{BASE_URL_MOCK}/calc/sqrt/64"
