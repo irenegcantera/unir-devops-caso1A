@@ -78,13 +78,13 @@ pipeline {
 				    }
 				    stash(includes: 'result-rest.xml', name: 'result-rest') 
 			         }
-			         post { 
-				     always { 
-					echo 'Borrar WORKSPACE agent-test!'
-					cleanWs()
-				     }
-				 }
 			   }
+		        }
+			post { 
+			     always { 
+				echo 'Borrar WORKSPACE agent-test!'
+				cleanWs()
+			     }
 		        }
 		}
 
