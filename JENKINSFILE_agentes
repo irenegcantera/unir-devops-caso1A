@@ -15,12 +15,12 @@ pipeline {
 			git 'https://github.com/irenegcantera/unir-devops-caso1A.git'
 			stash(name: 'app') 
 		    }
-		    post { 
-			always { 
-			    echo 'Borrar WORKSPACE agent-git!'
-			    cleanWs()
-			}
-		    }
+		    //post { 
+			//always { 
+			    //echo 'Borrar WORKSPACE agent-git!'
+			    //cleanWs()
+			//}
+		    //}
 		}
 		
 		stage('Build') {
@@ -32,12 +32,6 @@ pipeline {
 			echo 'Eyyy, esto es Python. No hay que compilar nada!!!'
 			bat 'dir'
 		   }
-		   post { 
-			always { 
-			    echo 'Borrar WORKSPACE principal!'
-			    cleanWs()
-			}
-		    }
 		}
 
 		stage('Tests') {
@@ -80,12 +74,14 @@ pipeline {
 			         }
 			   }
 		        }
-			post { 
-			     always { 
-				echo 'Borrar WORKSPACE agent-test!'
-				cleanWs()
-			     }
-		        }
+			//post { 
+			     //always { 
+				//node {
+				    //echo 'Borrar WORKSPACE agent-test!'
+				    //cleanWs()
+				//}
+			     //}
+		        //}
 		}
 
 		stage('Results') {
@@ -98,21 +94,29 @@ pipeline {
 			unstash 'result-rest'
 			junit 'result*.xml' 
 		     }
-		   post { 
-			always { 
-			    echo 'Borrar WORKSPACE principal!'
-			    cleanWs()
-			}
-		    }
+		   //post { 
+			//always { 
+			    //echo 'Borrar WORKSPACE principal!'
+			    //cleanWs()
+			//}
+		    //}
 		}
 	}
 
-	//post { 
-	        //always { 
-			//node ('unit || rest || tests') {
-		            //echo 'Borrar WORKSPACE!'
-			    //cleanWs()
-			//}
-		//}
-	//}
+	post { 
+	    always { 
+		node ('unit || rest || tests') {
+		     echo 'Borrar WORKSPACE agent-test!'
+		     cleanWs()
+	        }
+		node ('git') {
+		     echo 'Borrar WORKSPACE agent-git!'
+		     cleanWs()
+	        }
+		node ('') {
+		     echo 'Borrar WORKSPACE principal!'
+		     cleanWs()
+	        }
+	    }
+	}
 }
