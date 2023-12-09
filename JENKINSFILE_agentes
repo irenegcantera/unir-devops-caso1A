@@ -14,12 +14,6 @@ pipeline {
 			git 'https://github.com/irenegcantera/unir-devops-caso1A.git'
 			stash(name: 'app') 
 		    }
-		    //post { 
-			//always { 
-			    //echo 'Borrar WORKSPACE agent-git!'
-			    //cleanWs()
-			//}
-		    //}
 		}
 		
 		stage('Build') {
@@ -73,14 +67,6 @@ pipeline {
 			         }
 			   }
 		        }
-			//post { 
-			     //always { 
-				//node {
-				    //echo 'Borrar WORKSPACE agent-test!'
-				    //cleanWs()
-				//}
-			     //}
-		        //}
 		}
 
 		stage('Results') {
@@ -93,12 +79,6 @@ pipeline {
 			unstash 'result-rest'
 			junit 'result*.xml' 
 		     }
-		   //post { 
-			//always { 
-			    //echo 'Borrar WORKSPACE principal!'
-			    //cleanWs()
-			//}
-		    //}
 		}
 	}
 
@@ -112,7 +92,7 @@ pipeline {
 		     echo 'Borrar WORKSPACE agent-git!'
 		     cleanWs()
 	        }
-		node ('') {
+		node ('principal') {
 		     echo 'Borrar WORKSPACE principal!'
 		     cleanWs()
 	        }
