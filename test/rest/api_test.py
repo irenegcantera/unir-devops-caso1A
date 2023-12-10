@@ -8,8 +8,6 @@ import pytest
 BASE_URL = "http://localhost:5000"
 BASE_URL_MOCK = "http://localhost:9090"
 DEFAULT_TIMEOUT = 2  # in secs
-MAX_RETRIES = 3
-RETRY_DELAY = 5
 
 @pytest.mark.api
 class TestApi(unittest.TestCase):
@@ -29,19 +27,7 @@ class TestApi(unittest.TestCase):
 
     def test_api_sqrt(self):
         url = f"{BASE_URL_MOCK}/calc/sqrt/64"
-        
-        for attempt in range(1, MAX_RETRIES + 1):
-            try:
-                response = urlopen(url, timeout=DEFAULT_TIMEOUT)
-            except urllib.error.URLError as e:
-                print(f"Attempt {attempt} failed: {e}")
-                if attempt < MAX_RETRIES:
-                    print(f"Retrying in {RETRY_DELAY} seconds...")
-                    sleep(RETRY_DELAY)
-                else:
-                    print(f"Max retries reached. Unable to establish a connection.")
-                    print(f"Failed to perform API request: {e}")
-                    
+        response = urlopen(url, timeout=DEFAULT_TIMEOUT)
         self.assertEqual(
             response.status, http.client.OK, f"Error en la petición API a {url}"
         )
