@@ -42,10 +42,9 @@ pipeline {
 				// Tests analisis de codigo estatico (flake8)
 				stage('StaticTest') {
 					steps {
-						catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+						recordIssues qualityGates: [[threshold: 10, type: 'TOTAL', unstable: true], [threshold: 11, type: 'TOTAL', unstable: false]], tools: [flake8(name: 'Flake8', pattern: 'flake8.out')] {
 						bat '''
-							flake8 --format=pylint --exit-zero %WORKSPACE%
-							
+							flake8 --format=pylint --exit-zero %WORKSPACE% >flake8.out
 						'''
 						}    
 					}
