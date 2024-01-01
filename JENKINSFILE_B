@@ -1,0 +1,77 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Get Code') {
+            steps {
+                // Obtener código del repo
+                git 'https://github.com/irenegcantera/unir-devops-caso1A.git'
+            }
+        }
+
+		stage('Tests') {
+            parallel {
+				// Tests unitarios
+				stage('UnitTest') {
+					steps {
+						catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+						bat '''
+							set PYTHONPATH=%WORKSPACE%
+							C:\\Users\\irene\\AppData\\Local\\Programs\\Python\\Python39\\Scripts\\pytest --junitxml=result-unit.xml test\\unit
+						'''
+						}
+					}
+				}
+				
+				// Tests integracion
+				stage('RestTest') {
+					steps {
+						catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+						bat '''
+							set FLASK_APP=app\\api.py
+							set FLASK_ENV=development
+							start flask run
+							start java -jar C:\\Users\\irene\\Desktop\\DEVOPS_AND_CLOUD\\CP_1\\helloworld\\test\\wiremock\\wiremock-standalone-3.3.1.jar --port 9090 --root-dir C:\\Users\\irene\\Desktop\\DEVOPS_AND_CLOUD\\CP_1\\helloworld\\test\\wiremock
+							set PYTHONPATH=%WORKSPACE%
+							C:\\Users\\irene\\AppData\\Local\\Programs\\Python\\Python39\\Scripts\\pytest --junitxml=result-rest.xml test\\rest
+						'''
+						}    
+					}
+				}
+				
+				// Tests analisis de codigo estatico (flake8)
+				stage('StaticTest') {
+					steps {
+						catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+						bat '''
+							flake8 --format=pylint --exit-zero %WORKSPACE%
+							
+						'''
+						}    
+					}
+				}
+				
+				// Tests seguridad analisis codigo estatico (bandit)
+				//stage('SecurityTest') {
+					//steps {
+						
+					//}
+				//}
+				
+				// Tests de carga (jmeter)
+				//stage('PerformanceTest') {
+					//steps {
+    
+					//}
+				//}
+				
+				// Tests de cobertura de codigo (coverage)
+				//stage('CoverageTest') {
+					//steps {
+
+					//}
+				//}
+			}
+		}
+
+}
