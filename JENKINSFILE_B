@@ -50,7 +50,7 @@ pipeline {
 					}
 					post {
 						always {
-							recordIssues qualityGates: [[threshold: 10, type: 'TOTAL', unstable: true], [threshold: 11, type: 'TOTAL', unstable: false]], tools: [flake8(name: 'Flake8', pattern: 'flake8.out')]
+							recordIssues qualityGates: [[threshold: 8, type: 'TOTAL', unstable: true], [threshold: 10, type: 'TOTAL', unstable: false]], tools: [flake8(name: 'Flake8', pattern: 'flake8.out')]
 						}
 					}
 				}
