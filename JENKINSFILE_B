@@ -56,11 +56,20 @@ pipeline {
 				}
 				
 				// Tests seguridad analisis codigo estatico (bandit)
-				//stage('SecurityTest') {
-					//steps {
-						
-					//}
-				//}
+				stage('SecurityTest') {
+					steps {
+						catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+						bat '''
+							bandit -r %WORKSPACE% -f custom -o bandit.out
+						'''
+						}  
+					}
+					post {
+						always {
+							recordIssues qualityGates: [[threshold: 2, type: 'TOTAL', unstable: true], [threshold: 4, type: 'TOTAL', unstable: false]], tools: [pylint(name: 'Bandit', pattern: 'bandit.out')]
+						}
+					}
+				}
 				
 				// Tests de carga (jmeter)
 				//stage('PerformanceTest') {
