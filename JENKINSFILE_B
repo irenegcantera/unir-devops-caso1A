@@ -4,6 +4,7 @@ pipeline {
     stages {
         stage('Get Code') {
             steps {
+		deleteDir()
                 // Obtener código del repo
                 git 'https://github.com/irenegcantera/unir-devops-caso1A.git'
             }
