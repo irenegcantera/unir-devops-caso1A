@@ -72,10 +72,15 @@ pipeline {
 	//}
 	
 	// Tests de cobertura de codigo (coverage)
-	//stage('CoverageTest') {
-		//steps {
-
-		//}
-	//}
+	stage('CoverageTest') {
+		steps {
+			catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+			bat '''
+				coverage run --branch --source=app --omit=app\\__init__.py,app\\api.py -m C:\\Users\\irene\\AppData\\Local\\Programs\\Python\\Python39\\Scripts\\pytest test\\unit
+				coverage xml
+			'''
+			cobertura coberturaReportFile: 'coverage.xml', conditionalCoverageTargets: '90, 80, 90', lineCoverageTargets: '95, 85, 95', onlyStable: false
+		}
+	}
      }
 }
