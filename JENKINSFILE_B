@@ -65,11 +65,19 @@ pipeline {
 	}
 	
 	// Tests de carga (jmeter)
-	//stage('PerformanceTest') {
-		//steps {
-
-		//}
-	//}
+	stage('PerformanceTest') {
+		steps {
+			catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+			bat '''
+				set FLASK_APP=app\\api.py
+				set FLASK_ENV=development
+				start flask run
+				C:\\Users\\irene\\Desktop\\DEVOPS_AND_CLOUD\\CP_1_B\\apache-jmeter-5.6.2\\apache-jmeter-5.6.2\\bin\\jmeter -n -t test\\jmeter\\flask.jmx –f –l flask.jtl
+			'''
+			perfReport sourceDataFiles: 'flask.jtl'
+			}  
+		}
+	}
 	
 	// Tests de cobertura de codigo (coverage)
 	stage('CoverageTest') {
