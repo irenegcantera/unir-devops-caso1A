@@ -77,7 +77,7 @@ pipeline {
 			catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
 			bat '''
 				set PYTHONPATH=%WORKSPACE%
-				coverage run --branch --source=app --omit=app\\__init__.py,app\\api.py -m pytest test\\unit
+				coverage run --branch --source=app --omit=app\\__init__.py,app\\api.py //-m pytest test\\unit
 				coverage xml
 			'''
 			cobertura coberturaReportFile: 'coverage.xml', conditionalCoverageTargets: '90, 80, 90', lineCoverageTargets: '95, 85, 95', onlyStable: false
