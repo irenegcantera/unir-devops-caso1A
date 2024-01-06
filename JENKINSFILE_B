@@ -80,6 +80,7 @@ pipeline {
 				coverage xml
 			'''
 			cobertura coberturaReportFile: 'coverage.xml', conditionalCoverageTargets: '90, 80, 90', lineCoverageTargets: '95, 85, 95', onlyStable: false
+			}	
 		}
 	}
      }
