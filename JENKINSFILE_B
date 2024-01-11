@@ -4,91 +4,95 @@ pipeline {
     stages {
         stage('Get Code') {
             steps {
-		deleteDir()
+		    deleteDir()
                 // Obtener código del repo
                 git 'https://github.com/irenegcantera/unir-devops-caso1A.git'
             }
         }
 
-	// Tests unitarios
-	stage('UnitTest') {
-		steps {
-			catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
-			bat '''
-				set PYTHONPATH=%WORKSPACE%
-				coverage run --branch --source=app --omit=app\\__init__.py,app\\api.py -m pytest --junitxml=result-unit.xml test\\unit
-			'''
-			junit 'result*.xml'
-			}
-		}
-	}
-	
-	// Tests integracion
-	stage('RestTest') {
-		steps {
-			catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
-			bat '''
-				set FLASK_APP=app\\api.py
-				set FLASK_ENV=development
-				start flask run
-				start java -jar C:\\Users\\irene\\Desktop\\DEVOPS_AND_CLOUD\\CP_1_B\\unir-devops-caso1A\\test\\wiremock\\wiremock-standalone-3.3.1.jar --port 9090 --proxy-timeout --root-dir C:\\Users\\irene\\Desktop\\DEVOPS_AND_CLOUD\\CP_1_B\\unir-devops-caso1A\\test\\wiremock
-				set PYTHONPATH=%WORKSPACE%
-				C:\\Users\\irene\\AppData\\Local\\Programs\\Python\\Python39\\Scripts\\pytest --junitxml=result-rest.xml test\\rest
-			'''
-			junit 'result*.xml'
-			}    
-		}
-	}
-	
-	// Tests analisis de codigo estatico (flake8)
-	stage('StaticTest') {
-		steps {
-			catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
-			bat '''
-				flake8 --format=pylint --exit-zero %WORKSPACE%/app >flake8.out
-			'''
-			recordIssues qualityGates: [[threshold: 8, type: 'TOTAL', unstable: true], [threshold: 10, type: 'TOTAL', unstable: false]], tools: [flake8(name: 'Flake8', pattern: 'flake8.out')]
-			}    
-		}
-	}
-	
-	// Tests seguridad analisis codigo estatico (bandit)
-	stage('SecurityTest') {
-		steps {
-			catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
-			bat '''
-				bandit --exit-zero -r . -f custom -o bandit.out --msg-template "{abspath}:{line}: {severity}: {test_id}: {msg}"
-			'''
-			recordIssues qualityGates: [[threshold: 2, type: 'TOTAL', unstable: true], [threshold: 4, type: 'TOTAL', unstable: false]], tools: [pyLint(name: 'Bandit', pattern: 'bandit.out')]
-			}  
-		}
-	}
-	
-	// Tests de carga (jmeter)
-	stage('PerformanceTest') {
-		steps {
-			catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
-			bat '''
-				set FLASK_APP=app\\api.py
-				set FLASK_ENV=development
-				start flask run
-				C:\\Users\\irene\\Desktop\\DEVOPS_AND_CLOUD\\CP_1_B\\apache-jmeter-5.6.2\\apache-jmeter-5.6.2\\bin\\jmeter -n -t test\\jmeter\\flask.jmx -l test\\jmeter\\flask.jtl
-			'''
-			perfReport sourceDataFiles: 'test\\jmeter\\flask.jtl'
-			}  
-		}
-	}
-	
-	// Tests de cobertura de codigo (coverage)
-	stage('CoverageTest') {
-		steps {
-			catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
-			bat '''
-				coverage xml
-			'''
-			cobertura coberturaReportFile: 'coverage.xml', conditionalCoverageTargets: '90, 80, 90', lineCoverageTargets: '95, 85, 95', onlyStable: false
-			}	
-		}
-	}
-     }
+    	// Tests unitarios
+    	stage('UnitTest') {
+    		steps {
+    			catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+    			bat '''
+    				set PYTHONPATH=%WORKSPACE%
+    				coverage run --branch --source=app --omit=app\\__init__.py,app\\api.py -m pytest --junitxml=result-unit.xml test\\unit
+    			'''
+    			junit 'result*.xml'
+    			}
+    		}
+    	}
+    	
+    	// Tests integracion
+    	stage('RestTest') {
+    		steps {
+    			catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+    			bat '''
+    				set FLASK_APP=app\\api.py
+    				set FLASK_ENV=development
+    				start flask run
+    				start java -jar C:\\Users\\irene\\Desktop\\DEVOPS_AND_CLOUD\\CP_1_B\\unir-devops-caso1A\\test\\wiremock\\wiremock-standalone-3.3.1.jar --port 9090 --root-dir C:\\Users\\irene\\Desktop\\DEVOPS_AND_CLOUD\\CP_1_B\\unir-devops-caso1A\\test\\wiremock
+    				set PYTHONPATH=%WORKSPACE%
+    				C:\\Users\\irene\\AppData\\Local\\Programs\\Python\\Python39\\Scripts\\pytest --junitxml=result-rest.xml test\\rest
+    			'''
+    			junit 'result*.xml'
+    			}    
+    		}
+    	}
+    	
+    	// Tests analisis de codigo estatico (flake8)
+    	stage('StaticTest') {
+    		steps {
+    			catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+    			bat '''
+    				flake8 --format=pylint --exit-zero %WORKSPACE%/app >flake8.out
+    			'''
+    			recordIssues qualityGates: [[threshold: 8, type: 'TOTAL', unstable: true], [threshold: 10, type: 'TOTAL', unstable: false]], tools: [flake8(name: 'Flake8', pattern: 'flake8.out')]
+    			}    
+    		}
+    	}
+    	
+    	// Tests seguridad analisis codigo estatico (bandit)
+    	stage('SecurityTest') {
+    		steps {
+    			catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+    			bat '''
+    				bandit --exit-zero -r . -f custom -o bandit.out --msg-template "{abspath}:{line}: {severity}: {test_id}: {msg}"
+    			'''
+    			recordIssues qualityGates: [[threshold: 2, type: 'TOTAL', unstable: true], [threshold: 4, type: 'TOTAL', unstable: false]], tools: [pyLint(name: 'Bandit', pattern: 'bandit.out')]
+    			}  
+    		}
+    	}
+    	
+    	// Tests de carga (jmeter)
+    	stage('PerformanceTest') {
+    		steps {
+    			catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+    			bat '''
+    				C:\\Users\\irene\\Desktop\\DEVOPS_AND_CLOUD\\CP_1_B\\apache-jmeter-5.6.2\\apache-jmeter-5.6.2\\bin\\jmeter -n -t test\\jmeter\\flask.jmx -l test\\jmeter\\flask.jtl
+    			'''
+    			perfReport sourceDataFiles: 'test\\jmeter\\flask.jtl'
+    			}  
+    		}
+    	}
+    	
+    	// Tests de cobertura de codigo (coverage)
+    	stage('CoverageTest') {
+    		steps {
+    			catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+    			bat '''
+    				coverage xml
+    			'''
+    			cobertura coberturaReportFile: 'coverage.xml', conditionalCoverageTargets: '90, 80, 90', lineCoverageTargets: '95, 85, 95', onlyStable: false
+    			}	
+    		}
+    	}
+    }
+    
+    //post { 
+	   //always { 
+		   //echo 'Borrar WORKSPACE'
+		   //cleanWs()
+	   //}
+	//}
 }
