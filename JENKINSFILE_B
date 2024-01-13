@@ -88,11 +88,4 @@ pipeline {
     		}
     	}
     }
-    
-    post { 
-	   always {
-		   echo 'Borrar WORKSPACE'
-		   cleanWs()
-	   }
-    }
 }
