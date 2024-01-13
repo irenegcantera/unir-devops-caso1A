@@ -83,6 +83,7 @@ pipeline {
     			bat '''
     				coverage xml
     			'''
+			// x: maximo, y: minimo para ser inestable, z: minimo para ser exitoso 
     			cobertura coberturaReportFile: 'coverage.xml', conditionalCoverageTargets: '100, 80, 90', lineCoverageTargets: '100, 85, 95', failUnstable: false, onlyStable: false
     			}	
     		}
