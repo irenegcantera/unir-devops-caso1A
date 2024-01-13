@@ -57,7 +57,7 @@ pipeline {
     		steps {
     			catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
     			bat '''
-    				bandit --exit-zero -r . -f custom -o bandit.out --msg-template "{abspath}:{line}: {severity}: {test_id}: {msg}"
+    				bandit --exit-zero -r %WORKSPACE% -f custom -o bandit.out --msg-template "{abspath}:{line}: {severity}: {test_id}: {msg}"
     			'''
     			recordIssues qualityGates: [[threshold: 2, type: 'TOTAL', unstable: true], [threshold: 4, type: 'TOTAL', unstable: false]], tools: [pyLint(name: 'Bandit', pattern: 'bandit.out')]
     			}  
