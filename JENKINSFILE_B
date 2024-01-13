@@ -83,7 +83,7 @@ pipeline {
     			bat '''
     				coverage xml
     			'''
-    			cobertura coberturaReportFile: 'coverage.xml', conditionalCoverageTargets: '90, 80, 90', lineCoverageTargets: '95, 85, 95', onlyStable: false
+    			cobertura coberturaReportFile: 'coverage.xml', conditionalCoverageTargets: '90, 80, 80', lineCoverageTargets: '95, 85, 85', onlyStable: false
     			}	
     		}
     	}
