@@ -35,8 +35,7 @@ pipeline {
             				set PYTHONPATH=%WORKSPACE%
             				coverage run --branch --source=app --omit=app\\__init__.py,app\\api.py -m pytest --junitxml=result-unit.xml test\\unit
             			'''
-            			junit 'result*.xml'
-            			//stash(includes: 'result-unit.xml', name: 'junit')
+            			junit 'result-unit.xml'
             			}
             		}
             	}
@@ -60,8 +59,7 @@ pipeline {
             				set PYTHONPATH=%WORKSPACE%
             				C:\\Users\\irene\\AppData\\Local\\Programs\\Python\\Python39\\Scripts\\pytest --junitxml=result-rest.xml test\\rest
             			'''
-            			junit 'result*.xml'
-            			//stash(includes: 'result-rest.xml', name: 'rest')
+            			junit 'result-rest.xml'
             			}    
             		}
             	}
@@ -78,7 +76,8 @@ pipeline {
             			bat '''
             				coverage xml
             			'''
-                	    cobertura coberturaReportFile: 'coverage.xml', conditionalCoverageTargets: '90, 80, 90', lineCoverageTargets: '95, 85, 95', onlyStable: false
+				// x: maximo, y: minimo para ser inestable, z: minimo para ser exitoso 
+                	    cobertura coberturaReportFile: 'coverage.xml', conditionalCoverageTargets: '100, 80, 90', lineCoverageTargets: '100, 85, 95', failUnstable: false, onlyStable: false
                     	}	
                     }
                 }
@@ -120,7 +119,7 @@ pipeline {
     				    unstash 'app'
             			catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
             			bat '''
-            				bandit --exit-zero -r %WORKSPACE% -f custom -o bandit.out --msg-template "{abspath}:{line}: [{severity},{test_id}]: {msg}"
+            				bandit --exit-zero -r %WORKSPACE% -f custom -o bandit.out --severity-level all --msg-template "{abspath}:{line}: [{severity},{test_id}]: {msg}"
             			'''
             			recordIssues qualityGates: [[threshold: 2, type: 'TOTAL', unstable: true], [threshold: 4, type: 'TOTAL', unstable: false]], tools: [pyLint(name: 'Bandit', pattern: 'bandit.out')]
             			}  
