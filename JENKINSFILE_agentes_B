@@ -35,7 +35,7 @@ pipeline {
             				set PYTHONPATH=%WORKSPACE%
             				coverage run --branch --source=app --omit=app\\__init__.py,app\\api.py -m pytest --junitxml=result-unit.xml test\\unit
             			'''
-            			junit 'result-unit.xml'
+            			junit 'result*.xml'
             			}
             		}
             	}
@@ -59,7 +59,7 @@ pipeline {
             				set PYTHONPATH=%WORKSPACE%
             				C:\\Users\\irene\\AppData\\Local\\Programs\\Python\\Python39\\Scripts\\pytest --junitxml=result-rest.xml test\\rest
             			'''
-            			junit 'result-rest.xml'
+            			junit 'result*.xml'
             			}    
             		}
             	}
