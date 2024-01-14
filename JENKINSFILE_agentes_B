@@ -138,7 +138,7 @@ pipeline {
     				    unstash 'app'
             			catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
             			bat '''
-            				C:\\Users\\irene\\Desktop\\DEVOPS_AND_CLOUD\\CP_1_B\\apache-jmeter-5.6.2\\apache-jmeter-5.6.2\\bin\\jmeter -n -t \\test\\jmeter\\flask.jmx -l \\test\\jmeter\\flask.jtl
+            				C:\\Users\\irene\\Desktop\\DEVOPS_AND_CLOUD\\CP_1_B\\apache-jmeter-5.6.2\\apache-jmeter-5.6.2\\bin\\jmeter -n -t test\\jmeter\\flask.jmx -l test\\jmeter\\flask.jtl
             			'''
             			perfReport sourceDataFiles: '\\test\\jmeter\\flask.jtl'
             			}  
