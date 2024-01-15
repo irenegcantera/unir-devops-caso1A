@@ -12,7 +12,8 @@ pipeline {
     			// Vaciar directorio
                 deleteDir()
                 // Obtener código del repo
-                git 'https://github.com/irenegcantera/unir-devops-caso1A.git'
+                git branch: 'feature_fix_coverage',
+    			url: 'https://github.com/irenegcantera/unir-devops-caso1A.git'
                 // Guardar app para el resto de agentes
                 stash(name: 'app')
             }
