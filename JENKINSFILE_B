@@ -6,8 +6,9 @@ pipeline {
             steps {
 		deleteDir()
                 // Obtener código del repo
-		git branch: 'feature_fix_coverage',
-    			url: 'https://github.com/irenegcantera/unir-devops-caso1A.git'
+		git 'https://github.com/irenegcantera/unir-devops-caso1A.git'
+		//git branch: 'feature_fix_coverage',
+    			//url: 'https://github.com/irenegcantera/unir-devops-caso1A.git'
             }
         }
 
